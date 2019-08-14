@@ -19,7 +19,7 @@ package cache
 import (
 	"errors"
 	"sync"
-
+	"k8s.io/klog"
 	"k8s.io/apimachinery/pkg/util/sets"
 )
 
@@ -329,6 +329,8 @@ func (f *FIFO) Replace(list []interface{}, resourceVersion string) error {
 func (f *FIFO) Resync() error {
 	f.lock.Lock()
 	defer f.lock.Unlock()
+
+	klog.V(4).Infof("Self: %v", f)
 
 	inQueue := sets.NewString()
 	for _, id := range f.queue {
