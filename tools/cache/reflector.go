@@ -240,7 +240,7 @@ func (r *Reflector) ListAndWatch(stopCh <-chan struct{}) error {
 				return
 			}
 			if r.ShouldResync == nil || r.ShouldResync() {
-				klog.V(4).Infof("%s: forcing resync (has edits): %v", r.name, r.store.Resync)
+				klog.V(4).Infof("%s: forcing resync (has edits): %v", r.name, r.store.ListKeys())
 				if err := r.store.Resync(); err != nil {
 					klog.V(4).Infof("Could not sync: %v", err)
 					resyncerrc <- err
@@ -336,6 +336,7 @@ loop:
 			if !ok {
 				break loop
 			}
+			klog.V(4).Infof("Received event: %v", event)
 			if event.Type == watch.Error {
 				return apierrs.FromObject(event.Object)
 			}
