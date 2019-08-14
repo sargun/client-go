@@ -240,8 +240,9 @@ func (r *Reflector) ListAndWatch(stopCh <-chan struct{}) error {
 				return
 			}
 			if r.ShouldResync == nil || r.ShouldResync() {
-				klog.V(4).Infof("%s: forcing resync (has edits)", r.name)
+				klog.V(4).Infof("%s: forcing resync (has edits): %v", r.name, r.store.Resync)
 				if err := r.store.Resync(); err != nil {
+					klog.V(4).Infof("Could not sync: %v", err)
 					resyncerrc <- err
 					return
 				}
